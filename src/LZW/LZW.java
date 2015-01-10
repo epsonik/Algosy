@@ -1,8 +1,11 @@
+package LZW;
+
 import java.util.*;
  
 public class LZW {
-
-	public static short DSIZE = 256;
+	private static short DSIZE = 256;
+	
+	public LZW(){};
 	
 	public static List<Integer> compress(String uncompressed) {
         // Budujemy s³ownik
@@ -57,20 +60,5 @@ public class LZW {
             w = entry;
         }
         return result;
-    }
- 
-    public static void main(String[] args) {
-		   
-    	String s ="thisisthetest";
-    	
-    	// Kompresja
-    	List<Integer> compressed = compress(s);
-    	
-    	System.out.println(compressed);
-    	
-    	// Dekompresja
-    	String decompressed  = decompress(compressed);
-    	
-    	System.out.println(decompressed);
     }
 }
