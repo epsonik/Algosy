@@ -61,7 +61,7 @@ public class LZW {
  
     public static void main(String[] args) {
 		   
-    	String s ="Dupa gola wodki wola";
+    	String s ="thisisthetest";
     	
     	// Kompresja
     	List<Integer> compressed = compress(s);
