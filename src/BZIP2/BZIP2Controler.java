@@ -1,5 +1,7 @@
 package BZIP2;
 
+import bzip2.BZip2InputStream;
+import bzip2.BZip2OutputStream;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -37,8 +39,20 @@ public class BZIP2Controler {
 	}
 	
 	public void decompress() throws IOException{
-		
-		
-	}
 	
+
+        File inputFile = new File(inputFileName);
+        InputStream fileInputStream = new BufferedInputStream(new FileInputStream(inputFile));
+        BZip2InputStream inputStream = new BZip2InputStream(fileInputStream, false);
+        OutputStream fileOutputStream = new BufferedOutputStream(new FileOutputStream(outputFileName), 524288);
+
+        byte[] decoded = new byte[524288];
+        int bytesRead;
+        while ((bytesRead = inputStream.read(decoded)) != -1) {
+            fileOutputStream.write(decoded, 0, bytesRead);
+        }
+        fileOutputStream.close();
+	
+	System.out.println("Done");
+	}
 }
