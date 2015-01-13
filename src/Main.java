@@ -1,20 +1,16 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Scanner;
 
-import LZW.LZW;
+import java.io.IOException;
+import java.util.Scanner;
+import BZIP2.BZIP2Controler;
+import LZW.LZWControler;
+import ReadData.ErrorHandling;
+import ReadData.ReadData;
 
 public class Main {
-
-	private static BufferedReader inputLine;
+	
 	private static Scanner input;
 
-	public static void main(String[] args) throws ErrorHandling, IOException {
+	public static void main(String[] args) throws IOException, ErrorHandling {
 		
 		//brak pliku
 		if (args.length == 0) {
@@ -27,48 +23,52 @@ public class Main {
 			System.exit (1);
 		}
 		
-		//wczytywanie pliku
-		FileReader inputFile;
-		try {
-			inputFile = new FileReader(args[0]);
-		} catch (FileNotFoundException e) {
-			throw new ErrorHandling( e.getMessage() );
-		}
+		//wczytujemy pliki
+		ReadData readData = new ReadData(args[0],args[1]);
+		readData.read();
 		
-		//plik wyjœciowy
-		PrintWriter saveFile = new PrintWriter("compressed.txt");
 		
 		input = new Scanner(System.in);
-		System.out.println("Choose what type of compression do you want: lzw or bzip2");
+		System.out.println("Choose what type of compression/decompression do you want: "
+				+ "lzw-compression, lzw-decompression,"
+				+ " bzip2-compression or bzip2-decompression"
+				+ "type exit to ");
+		
 		String text = input.nextLine();
 		
-		switch(text){
-			case "lzw":{
-				inputLine = new BufferedReader(inputFile);
-				String s = "";
-				//ka¿da linia jest wczytywana, kompresowana i zapisywana do pliku wyjœciowego
-				while( (s=inputLine.readLine()) != null ) {
-					List<Integer >compressed = LZW.compress(s);
-					Iterator<Integer> compressIterator = compressed.iterator();
-					while (compressIterator.hasNext()){
-						saveFile.print(compressIterator.next() + " ");
-					}
-					saveFile.println();
+		while(text != null){
+			switch(text){
+				case "lzw-compress":{
+					LZWControler lzwControler = new LZWControler(readData.getInputFile(),readData.getSaveFile());
+					lzwControler.compress();
+					break;
 				}
-				saveFile.close();
+				case "lzw-decompress":{
+					LZWControler lzwControler = new LZWControler(readData.getInputFile(),readData.getSaveFile());
+					lzwControler.decompress();
+					break;
+				}
 				
-				System.out.println("Done");
-				break;
+				case "bzip2-compress":{
+					BZIP2Controler bzip2Controler = new BZIP2Controler(readData.getInputFileName(), readData.getOutputFileName());
+					bzip2Controler.compress();
+					break;
+				}
+				
+				case "bzip2-decompress":{
+					BZIP2Controler bzip2Controler = new BZIP2Controler(readData.getInputFileName(), readData.getOutputFileName());
+					bzip2Controler.decompress();
+					break;
+				}
+				
+				case "exit":{
+					System.exit (1);
+				}
+				default:{
+					System.out.println("You've made some mistake. Type again");
+				}
 			}
-			case "bzip2":{
-				
-				
-				
-				break;
-			}
-			default:{
-				System.out.println("You've made some mistake. Restart the program");
-			}
-		}	
+			text = input.nextLine();
+		}
 	}
 }
